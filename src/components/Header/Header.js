@@ -9,6 +9,15 @@ import SuperHeader from '../SuperHeader';
 import MobileMenu from '../MobileMenu';
 import VisuallyHidden from '../VisuallyHidden';
 
+const AnimatedNavLink = ({href, children}) => {
+  return (
+    <NavLink href={href}>
+      <RegularLinkText>{children}</RegularLinkText>
+      <BoldLinkText>{children}</BoldLinkText>
+    </NavLink>
+  )
+}
+
 const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = React.useState(false);
 
@@ -20,12 +29,12 @@ const Header = () => {
           <Logo />
         </LogoWrapper>
         <DesktopNav>
-          <NavLink href="/sale">Sale</NavLink>
-          <NavLink href="/new">New&nbsp;Releases</NavLink>
-          <NavLink href="/men">Men</NavLink>
-          <NavLink href="/women">Women</NavLink>
-          <NavLink href="/kids">Kids</NavLink>
-          <NavLink href="/collections">Collections</NavLink>
+          <AnimatedNavLink href="/sale">Sale</AnimatedNavLink>
+          <AnimatedNavLink href="/new">New&nbsp;Releases</AnimatedNavLink>
+          <AnimatedNavLink href="/men">Men</AnimatedNavLink>
+          <AnimatedNavLink href="/women">Women</AnimatedNavLink>
+          <AnimatedNavLink href="/kids">Kids</AnimatedNavLink>
+          <AnimatedNavLink href="/collections">Collections</AnimatedNavLink>
         </DesktopNav>
         <MobileActions>
           <ShoppingBagButton>
@@ -114,16 +123,49 @@ const Filler = styled.div`
   }
 `;
 
+const RegularLinkText = styled.div`
+`
+const BoldLinkText = styled.div`
+  position: absolute;
+  font-weight: ${WEIGHTS.bold};
+  transform: translateY(100%);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+`
+
 const NavLink = styled.a`
   font-size: 1.125rem;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-gray-900);
   font-weight: ${WEIGHTS.medium};
+  display: block;
+  overflow: hidden;
+  position: relative;
+  padding: 0 1px; // To avoid some letters cutting of for bold text
+
+  @media(prefers-reduced-motion: no-preference) {
+    & > * {
+      will-change: transform;
+      transition: transform 300ms;
+    }
+    
+    &:is(:hover, :focus) {
+      ${RegularLinkText} {
+        transform: translateY(-100%);
+      }
+      ${BoldLinkText} {
+        transform: translateY(0);
+      }
+    }
+  }
 
   &:first-of-type {
     color: var(--color-secondary);
   }
 `;
+
 
 export default Header;
